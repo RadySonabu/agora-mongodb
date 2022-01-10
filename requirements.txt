@@ -20,6 +20,7 @@ fastapi-pagination==0.9.1
 fastapi-users==9.2.0
 fastapi-users-db-mongodb==1.1.0
 future==0.18.2
+gunicorn==20.1.0
 h11==0.12.0
 hjson==3.0.2
 idna==3.3
