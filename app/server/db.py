@@ -4,7 +4,7 @@ from fastapi_users.db import MongoDBUserDatabase
 from .auth.users import UserDB
 from fastapi import Request
 
-MONGO_DETAILS = "mongodb+srv://admin:admin@cluster0.dauoh.mongodb.net/agora?retryWrites=true&w=majority"
+MONGO_DETAILS = "mongodb+srv://admin:admin@cluster0.z1ek5.mongodb.net/agora?retryWrites=true&w=majority"
 
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS, uuidRepresentation="standard")
 
