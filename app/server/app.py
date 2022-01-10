@@ -7,12 +7,12 @@ import shutil
 from botocore.exceptions import ClientError
 from fastapi import FastAPI, File, Request, UploadFile, Body
 
-from server.post.routes.comment import router as CommentRouter
-from server.post.routes.focus import router as FocusRouter
-from server.post.routes.interest import router as InterestRouter
-from server.post.routes.post import router as PostRouter
-from server.event.routes.tags import router as TagRouter
-from server.event.routes.events import router as EventRouter
+from .post.routes.comment import router as CommentRouter
+from .post.routes.focus import router as FocusRouter
+from .post.routes.interest import router as InterestRouter
+from .post.routes.post import router as PostRouter
+from .event.routes.tags import router as TagRouter
+from .event.routes.events import router as EventRouter
 
 from .auth.routes import router as UserRouter
 from .auth.users import auth_backend, current_active_user, fastapi_users
