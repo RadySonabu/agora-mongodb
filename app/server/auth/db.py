@@ -3,7 +3,9 @@ from fastapi import APIRouter
 import motor.motor_asyncio
 from fastapi_users.db import MongoDBUserDatabase
 from .models import UserDB
-MONGO_DETAILS = "mongodb+srv://admin:admin@cluster0.z1ek5.mongodb.net/agora?retryWrites=true&w=majority"
+from decouple import config
+
+MONGO_DETAILS = config('MONGO_DETAILS')
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
     MONGO_DETAILS, uuidRepresentation="standard"
