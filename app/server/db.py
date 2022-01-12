@@ -26,7 +26,6 @@ tag_collection = tag.get_collection("tag_collection")
 event_collection = event.get_collection("event_collection")
 
 
-
 # Retrieve all students present in the database
 class Mongo:
     def __init__(self, collection, helper):

@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError
 from fastapi import FastAPI, File, Request, UploadFile, Body
 
 from .post.routes.comment import router as CommentRouter
-from .post.routes.focus import router as FocusRouter
+from .post.routes.focus import router as FocusRouter, focus_collection
 from .post.routes.interest import router as InterestRouter
 from .post.routes.post import router as PostRouter
 from .event.routes.tags import router as TagRouter
@@ -36,9 +36,9 @@ app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["use
 
 @app.get("/", tags=["Root"])
 async def read_root(request: Request):
+    
     client_host = request.client.host
     return {"message": f"Welcome to this fantastic app! {client_host}"}
-
 
 class UploadModel(BaseModel):
     uploader: str = Field(...)

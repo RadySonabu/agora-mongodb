@@ -13,6 +13,7 @@ from ...db import Mongo, post_collection, interest_collection, focus_collection,
 from ...auth.db import user_collection
 from typing import Optional
 import boto3
+from bson import ObjectId
 object_name = "Post"
 schema = PostSchema
 router = APIRouter()
@@ -71,34 +72,36 @@ async def get_data(limit: int = 10, offset:int=0, request: Request = any):
             query.update({item: queries[item]})
     data = await db.get(limit, offset, query)
 
-    for item in data['data']:
-        interest_detail = await interest_collection.find_one({'_id': ObjectId(item['interest'])})
-        focus_detail = await focus_collection.find_one({'_id': ObjectId(item['focus'])})
-        posted_by_detail = await user_collection.find_one({'_id': ObjectId(item['posted_by'])})
-        comment_count = await comment_collection.count_documents({'post': item['id']})
+    interest = interest_collection.find()
+    # for item in data['data']:
+        
+        # interest_detail = await interest_collection.find_one({'_id': ObjectId(item['interest'])})
+        # focus_detail = await focus_collection.find_one({'_id': ObjectId(item['focus'])})
+        # posted_by_detail = await user_collection.find_one({'_id': ObjectId(item['posted_by'])})
+        # comment_count = await comment_collection.count_documents({'post': item['id']})
 
-        # {'id': '61dabf4fff0cff407394d44f', 'active_status': True, 'created_by': 'admin', 'created_at': '2022-01-09T18:56:10.780486', 'updated_by': 'admin', 'updated_at': '2022-01-09T18:56:10.780486', 'post': '61daac0e5d8106575c793ebf', 'author': '61d9b8680a03f62aa1cf655f', 'message': 'this is my comment for post with id 61daac0e5d8106575c793ebf', 'parent_id': None, 'total_likes': '0'}
+    #     # {'id': '61dabf4fff0cff407394d44f', 'active_status': True, 'created_by': 'admin', 'created_at': '2022-01-09T18:56:10.780486', 'updated_by': 'admin', 'updated_at': '2022-01-09T18:56:10.780486', 'post': '61daac0e5d8106575c793ebf', 'author': '61d9b8680a03f62aa1cf655f', 'message': 'this is my comment for post with id 61daac0e5d8106575c793ebf', 'parent_id': None, 'total_likes': '0'}
 
-        item['interest'] = {
-            'id': str(interest_detail['_id']),
-            'name': interest_detail['name']
-        }
+        # item['interest'] = {
+        #     'id': str(interest_detail['_id']),
+        #     'name': interest_detail['name']
+        # }
 
         
-        item['focus'] = {
-            'id': str(focus_detail['_id']),
-            'name': focus_detail['name'],
-            'interest': item['interest']
-        }
+    #     item['focus'] = {
+    #         'id': str(focus_detail['_id']),
+    #         'name': focus_detail['name'],
+    #         'interest': item['interest']
+    #     }
 
-        item['posted_by'] = {
-            'id': str(posted_by_detail['_id']),
-            'email': posted_by_detail['email'],
-            'first_name': posted_by_detail['first_name'],
-            'last_name': posted_by_detail['last_name'],
-            'profile_pic': posted_by_detail['profile_pic'],
-        }
-        item['total_comments'] = comment_count
+        # item['posted_by'] = {
+        #     'id': str(posted_by_detail['_id']),
+        #     'email': posted_by_detail['email'],
+        #     'first_name': posted_by_detail['first_name'],
+        #     'last_name': posted_by_detail['last_name'],
+        #     'profile_pic': posted_by_detail['profile_pic'],
+        # }
+        # item['total_comments'] = comment_count
         
 
     if data:
