@@ -2,7 +2,7 @@ from fastapi import  Request
 
 def PaginatedResponseModel(data, message, count, offset, limit, request: Request ):
     client_host = request.client.host
-    deployment_host = 'agora-web-api'
+    deployment_host = 'agora-web-api.herokuapp.com'
     if offset == 0:
         prev_page = None
     else:
