@@ -9,8 +9,10 @@ from ..models.interest import (
     PaginatedResponseModel,
     UpdateInterestModel
 )
-from ...db import Mongo, interest_collection
+from ...db import Mongo, interest_collection, focus_collection
+from ...auth.db import user_collection
 object_name = "Interest"
+model_name = 'interest'
 schema = InterestSchema
 router = APIRouter()
 
@@ -54,11 +56,12 @@ async def get_data(id):
 
 @router.put("/{id}")
 async def update_data(id: str, req: UpdateInterestModel = Body(...)):
-    req = {k: v for k, v in req.dict().items() if v is not None}
-    updated_data = await db.update(id, req)
+    req = {'data':{'update_one':{k: v},'update_many':{f'{model_name}.{k}': v}} for k, v in req.dict().items() if v is not None}
+    collection_to_be_updated=[focus_collection, user_collection]
+    updated_data = await db.update(id,req, model_name=model_name, collection_to_be_updated=collection_to_be_updated)
     if updated_data:
         return ResponseModel(
-            f"{object_name} with ID: {id} name update is successful"
+            f"{object_name} with ID: {id} name update is successful", "success"
         )
     return ErrorResponseModel(
         "An error occurred",

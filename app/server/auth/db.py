@@ -10,8 +10,8 @@ MONGO_DETAILS = config('MONGO_DETAILS')
 client = motor.motor_asyncio.AsyncIOMotorClient(
     MONGO_DETAILS, uuidRepresentation="standard"
 )
-db = client["users"]
-user_collection = db.user_collection
+user = client["users"]
+user_collection = user.get_collection("user_collection")
 
 
 async def get_user_db():

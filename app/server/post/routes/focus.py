@@ -9,8 +9,10 @@ from ..models.focus import (
     PaginatedResponseModel,
     UpdateFocusModel
 )
-from ...db import Mongo, focus_collection, interest_collection
+from ...db import Mongo, focus_collection, interest_collection, post_collection
+from ...auth.db import user_collection
 object_name = "Focus"
+model_name = 'focus'
 schema = FocusSchema
 router = APIRouter()
 
@@ -28,7 +30,14 @@ db = Mongo(focus_collection, helper)
 @router.post("/", response_description=f"{object_name} data added into the database")
 async def add_data(data: schema = Body(...)):
     data = jsonable_encoder(data)
+    interest_item = await interest_collection.find_one({'_id': ObjectId(data['interest'])})
+
+    data['interest'] = {
+        'id': str(interest_item['_id']),
+        'name': interest_item['name']
+    }
     new_data = await db.add(data)
+
     return ResponseModel(new_data, f"{object_name} added successfully.")
 
 @router.get("/", response_description=f"{object_name} retrieved", )
@@ -40,14 +49,6 @@ async def get_data(limit: int = 10, offset:int=0, request: Request = any):
         if item != "limit" and item != "offset":
             query.update({item: queries[item]})
     data = await db.get(limit, offset, query)
-    
-    for item in data['data']:
-        interest_item = await interest_collection.find_one({'_id': ObjectId(item['interest'])})
-
-        item['interest'] = {
-            'id': str(interest_item['_id']),
-            'name': interest_item['name']
-        }
     if data:
         return PaginatedResponseModel(data=data['data'], request=request, count=data['count'], offset=offset, limit=limit,route='focus', message="data data retrieved successfully")
     return PaginatedResponseModel(data=data['data'], request=request, offset=offset, limit=limit, message="Empty list returned")
@@ -61,11 +62,12 @@ async def get_data(id):
 
 @router.put("/{id}")
 async def update_data(id: str, req: UpdateFocusModel = Body(...)):
-    req = {k: v for k, v in req.dict().items() if v is not None}
-    updated_data = await db.update(id, req)
+    req = {'data':{'update_one':{k: v},'update_many':{f'{model_name}.{k}': v}} for k, v in req.dict().items() if v is not None}
+    collection_to_be_updated=[post_collection]
+    updated_data = await db.update(id,req, model_name=model_name, collection_to_be_updated=collection_to_be_updated)
     if updated_data:
         return ResponseModel(
-            f"{object_name} with ID: {id} name update is successful"
+            f"{object_name} with ID: {id} name update is successful", 'success'
         )
     return ErrorResponseModel(
         "An error occurred",

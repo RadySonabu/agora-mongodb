@@ -13,10 +13,10 @@ class FocusSchema(BaseModel):
 
 class FocusModel(BaseModel):
     interest: str
-    name: InterestModel
+    name: str
 
 
 class UpdateFocusModel(BaseModel):
     interest: Optional[str]
-    name: Optional[InterestModel]
+    name: Optional[str]
 

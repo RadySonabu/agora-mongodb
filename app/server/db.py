@@ -1,7 +1,9 @@
+from typing import List
 import motor.motor_asyncio
 from bson.objectid import ObjectId
 from fastapi_users.db import MongoDBUserDatabase
 from .auth.users import UserDB
+from .auth.db import user_collection
 from fastapi import Request
 from decouple import config
 
@@ -54,18 +56,23 @@ class Mongo:
 
 
     # Update a student with a matching ID
-    async def update(self, id: str, data: dict):
+    async def update(self, id: str,data: dict, model_name, collection_to_be_updated):
         # Return false if an empty request body is sent.
         if len(data) < 1:
             return False
         update_object = await self.collection.find_one({"_id": ObjectId(id)})
-        print(update_object)
+
         if update_object:
-            updated_data = await self.collection.update_one(
-                {"_id": ObjectId(id)}, {"$set": data}
+            for item in collection_to_be_updated:
+                updated_many = await item.update_many(
+                    {f"{model_name}.id": str(update_object['_id'])}, {"$set": data['data']['update_many']}
+                )
+                print(model_name)
+            updated_one = await self.collection.update_one(
+                {"_id": ObjectId(id)}, {"$set": data['data']['update_one']}
             )
             
-            if updated_data:
+            if updated_many:
                 return True
             return False
 
