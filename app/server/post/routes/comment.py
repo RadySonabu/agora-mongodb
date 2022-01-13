@@ -29,34 +29,24 @@ db = Mongo(comment_collection, helper)
 @router.post("/", response_description=f"{object_name} data added into the database")
 async def add_data(data: schema = Body(...)):
     data = jsonable_encoder(data)
-    # interest = await interest_collection.find_one({'_id': ObjectId(data['interest'])})
-    # focus = await focus_collection.find_one({'_id': ObjectId(data['focus'])})
-    # posted_by = await user_collection.find_one({'_id': ObjectId(data['posted_by'])})
+    author_detail = await user_collection.find_one({'_id': ObjectId(data['author'])})
+    post_detail = await post_collection.find_one({'_id': ObjectId(data['post'])})
     
-    # data['interest'] = {
-    #     'id': str(interest['_id']),
-    #     'name': interest['name']
-    # }
+    data['post'] = {
+            'id': str(post_detail['_id']),
+            'title': post_detail['title']
 
-    
-    # data['focus'] = {
-    #     'id': str(focus['_id']),
-    #     'name': focus['name'],
-    #     'interest': data['interest']
-    # }
+        }
 
-    # data['posted_by'] = {
-    #     'id': str(posted_by['_id']),
-    #     'email': posted_by['email'],
-    #     'first_name': posted_by['first_name'],
-    #     'last_name': posted_by['last_name'],
-    #     'profile_pic': posted_by['profile_pic'],
-    # }
-    
-    
+    data['author'] = {
+        'id': str(author_detail['_id']),
+        'email': author_detail['email'],
+        'first_name': author_detail['first_name'],
+        'last_name': author_detail['last_name'],
+        'profile_pic': author_detail['profile_pic'],
+    }
 
     new_data = await db.add(data)
-    print(new_data)
     return ResponseModel(new_data, f"{object_name} added successfully.")
 
 @router.get("/", response_description=f"{object_name} retrieved", )
@@ -68,24 +58,7 @@ async def get_data(limit: int = 10, offset:int=0, request: Request = any):
         if item != "limit" and item != "offset":
             query.update({item: queries[item]})
     data = await db.get(limit, offset, query)
-    for item in data['data']:
-        print(item)
-        author_detail = await user_collection.find_one({'_id': ObjectId(item['author'])})
-        post_detail = await post_collection.find_one({'_id': ObjectId(item['post'])})
-
-        item['post'] = {
-            'id': str(post_detail['_id']),
-            'title': post_detail['title']
-
-        }
-
-        item['author'] = {
-            'id': str(author_detail['_id']),
-            'email': author_detail['email'],
-            'first_name': author_detail['first_name'],
-            'last_name': author_detail['last_name'],
-            'profile_pic': author_detail['profile_pic'],
-        }
+    
     if data:
         return PaginatedResponseModel(data=data['data'], request=request, count=data['count'], offset=offset, limit=limit,route='comments', message="data data retrieved successfully")
     return PaginatedResponseModel(data=data['data'], request=request, offset=offset, limit=limit, message="Empty list returned")
