@@ -34,12 +34,10 @@ app.include_router(fastapi_users.get_reset_password_router(), prefix="/auth", ta
 app.include_router(fastapi_users.get_verify_router(), prefix="/auth", tags=["auth"],)
 app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 
-@app.get("/root/asd", tags=["Root"])
+@app.get("/", tags=["Root"])
 async def read_root(request: Request):
-    info = str(request.url)
-    info.rsplit('/',1)
     client_host = request.client.host
-    return {"message": f"Welcome to this fantastic app! {info}"}
+    return {"message": f"Welcome to this fantastic app! "}
 
 class UploadModel(BaseModel):
     uploader: str = Field(...)
