@@ -32,5 +32,5 @@ async def get_classrooms(limit: int = 10, offset:int=0, request: Request = any):
             query.update({item: queries[item]})
     users = await db.get(limit, offset, query)
     if users:
-        return PaginatedResponseModel(data=users['data'], request=request, count=users['count'], offset=offset, limit=limit, route='users',message="user data retrieved successfully")
+        return PaginatedResponseModel(data=users['data'], request=request, count=users['count'], offset=offset, limit=limit, message="user data retrieved successfully")
     return PaginatedResponseModel(data=users['data'], request=request, offset=offset, limit=limit, message="Empty list returned")

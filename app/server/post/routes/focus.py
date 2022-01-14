@@ -50,7 +50,7 @@ async def get_data(limit: int = 10, offset:int=0, request: Request = any):
             query.update({item: queries[item]})
     data = await db.get(limit, offset, query)
     if data:
-        return PaginatedResponseModel(data=data['data'], request=request, count=data['count'], offset=offset, limit=limit,route='focus', message="data data retrieved successfully")
+        return PaginatedResponseModel(data=data['data'], request=request, count=data['count'], offset=offset, limit=limit, message="data data retrieved successfully")
     return PaginatedResponseModel(data=data['data'], request=request, offset=offset, limit=limit, message="Empty list returned")
 
 @router.get("/{id}", response_description=f"{object_name} data retrieved")
