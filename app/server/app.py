@@ -36,9 +36,10 @@ app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["use
 
 @app.get("/", tags=["Root"])
 async def read_root(request: Request):
-    
+    info = request.url
+    print(info)
     client_host = request.client.host
-    return {"message": f"Welcome to this fantastic app! {client_host}"}
+    return {"message": f"Welcome to this fantastic app! {info}"}
 
 class UploadModel(BaseModel):
     uploader: str = Field(...)
