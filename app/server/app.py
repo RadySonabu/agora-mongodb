@@ -6,7 +6,7 @@ import boto3
 import shutil
 from botocore.exceptions import ClientError
 from fastapi import FastAPI, File, Request, UploadFile, Body
-
+from fastapi.middleware.cors import CORSMiddleware
 from .post.routes.comment import router as CommentRouter
 from .post.routes.focus import router as FocusRouter, focus_collection
 from .post.routes.interest import router as InterestRouter
@@ -19,6 +19,20 @@ from .auth.users import auth_backend, current_active_user, fastapi_users
 from pydantic import BaseModel, Field
 
 app = FastAPI()
+origins = [
+    "http://127.0.0.1:8000",
+    "http://localhost",
+    "http://localhost:8080",
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(UserRouter, tags=["users"], prefix="/users")
 app.include_router(InterestRouter, tags=["interests"], prefix="/interests")
