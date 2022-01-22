@@ -7,8 +7,7 @@ from fastapi import (Body, Depends, FastAPI, File, HTTPException, Request,
                      UploadFile)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
+
 from pydantic import BaseModel, Field
 
 # from .auth.models.user import UserDB
