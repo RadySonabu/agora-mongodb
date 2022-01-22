@@ -1,8 +1,8 @@
 from typing import List
 import motor.motor_asyncio
 from bson.objectid import ObjectId
-from fastapi_users.db import MongoDBUserDatabase
-from .auth.users import UserDB
+# from fastapi_users.db import MongoDBUserDatabase
+# from .auth.users import UserDB
 from .auth.db import user_collection
 from fastapi import Request
 from decouple import config

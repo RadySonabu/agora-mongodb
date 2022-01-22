@@ -1,66 +1,66 @@
-from typing import Optional
+# from typing import Optional
 
-from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, FastAPIUsers
-from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
-)
-from fastapi_users.db import MongoDBUserDatabase
+# from fastapi import Depends, Request
+# from fastapi_users import BaseUserManager, FastAPIUsers
+# from fastapi_users.authentication import (
+#     AuthenticationBackend,
+#     BearerTransport,
+#     JWTStrategy,
+# )
+# from fastapi_users.db import MongoDBUserDatabase
 
-from .db import get_user_db
-from .models import User, UserCreate, UserUpdate, UserDB
+# from .db import get_user_db
+# from .models.user import User, UserCreate, UserUpdate, UserDB
 
-SECRET = "SECRET"
+# SECRET = "SECRET"
 
 
-class UserManager(BaseUserManager[UserCreate, UserDB]):
-    """Put your custom codes here"""
-    user_db_model = UserDB
-    reset_password_token_secret = SECRET
-    verification_token_secret = SECRET
+# class UserManager(BaseUserManager[UserCreate, UserDB]):
+#     """Put your custom codes here"""
+#     user_db_model = UserDB
+#     reset_password_token_secret = SECRET
+#     verification_token_secret = SECRET
 
-    async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
-        print(f"User {user.id} has registered.")
+#     async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
+#         print(f"User {user.id} has registered.")
 
-    async def on_after_forgot_password(
-        self, user: UserDB, token: str, request: Optional[Request] = None
-    ):
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
+#     async def on_after_forgot_password(
+#         self, user: UserDB, token: str, request: Optional[Request] = None
+#     ):
+#         print(f"User {user.id} has forgot their password. Reset token: {token}")
     
-    async def on_after_request_verify(
-        self, user: UserDB, token: str, request: Optional[Request] = None
-    ):
+#     async def on_after_request_verify(
+#         self, user: UserDB, token: str, request: Optional[Request] = None
+#     ):
 
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
-
-
-async def get_user_manager(user_db: MongoDBUserDatabase = Depends(get_user_db)):
-    yield UserManager(user_db)
+#         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
-bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+# async def get_user_manager(user_db: MongoDBUserDatabase = Depends(get_user_db)):
+#     yield UserManager(user_db)
 
 
-def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+# bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
-auth_backend = AuthenticationBackend(
-    name="jwt",
-    transport=bearer_transport,
-    get_strategy=get_jwt_strategy,
-)
-fastapi_users = FastAPIUsers(
-    get_user_manager,
-    [auth_backend],
-    User,
-    UserCreate,
-    UserUpdate,
-    UserDB,
-)
+# def get_jwt_strategy() -> JWTStrategy:
+#     return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
 
-current_active_user = fastapi_users.current_user(active=True)
+
+# auth_backend = AuthenticationBackend(
+#     name="jwt",
+#     transport=bearer_transport,
+#     get_strategy=get_jwt_strategy,
+# )
+# fastapi_users = FastAPIUsers(
+#     get_user_manager,
+#     [auth_backend],
+#     User,
+#     UserCreate,
+#     UserUpdate,
+#     UserDB,
+# )
+
+# current_active_user = fastapi_users.current_user(active=True)
 
     

@@ -20,8 +20,8 @@ def PaginatedResponseModel(data, message, count, offset, limit, request: Request
         next_page =None
     return {
         "count": count,
-        "prev": prev_page,
         "next": next_page,
+        "previous": prev_page,
         "results": data,
     }
 
