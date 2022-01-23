@@ -25,6 +25,7 @@ focus_collection = focus.get_collection("focus_collection")
 post_collection = post.get_collection("post_collection")
 post_likes_collection = post.get_collection("post_likes_collection")
 comment_collection = comment.get_collection("comment_collection")
+comment_likes_collection = post.get_collection("comment_likes_collection")
 tag_collection = tag.get_collection("tag_collection")
 event_collection = event.get_collection("event_collection")
 

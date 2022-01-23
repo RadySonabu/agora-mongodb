@@ -46,3 +46,6 @@ class UpdateCommentModel(BaseModel):
 
 
 
+class LikeCommentSchema(BaseModel):
+    comment: str # post id
+    user: str # user id

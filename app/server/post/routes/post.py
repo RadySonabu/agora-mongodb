@@ -125,8 +125,8 @@ async def delete_data(id: str):
     )
 
 
-@router.post("/like", response_description=f"{object_name} data liked from the database")
-async def like_post(data: LikePostSchema = Body(...)):
+@router.post("/follow", response_description=f"{object_name} data liked from the database")
+async def follow_post(data: LikePostSchema = Body(...)):
     data = jsonable_encoder(data)
     is_liked = await post_likes_collection.find_one({"post": data['post'], "user": data['user']})
     if is_liked:
@@ -136,8 +136,8 @@ async def like_post(data: LikePostSchema = Body(...)):
 
     return ResponseModel(helper(new_data), f"Successfully liked a {object_name}.")
 
-@router.post("/dislike", response_description=f"{object_name} data liked from the database")
-async def dislike_post(data: LikePostSchema = Body(...)):
+@router.post("/unfollow", response_description=f"{object_name} data liked from the database")
+async def unfollow_post(data: LikePostSchema = Body(...)):
     data = jsonable_encoder(data)
     is_liked = await post_likes_collection.find_one({"post": data['post'], "user": data['user']})
     if is_liked:
