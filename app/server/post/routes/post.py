@@ -7,9 +7,10 @@ from ..models.post import (
     ResponseModel, 
     ErrorResponseModel,
     PaginatedResponseModel,
-    UpdatePostModel
+    UpdatePostModel, 
+    LikePostSchema
 )
-from ...db import Mongo, post_collection, interest_collection, focus_collection, comment_collection
+from ...db import Mongo, post_collection, interest_collection, focus_collection, comment_collection, post_likes_collection
 from ...auth.db import user_collection
 from typing import Optional
 import boto3
@@ -30,16 +31,7 @@ def helper(data) -> dict:
     return data
 
 db = Mongo(post_collection, helper)
-# {
-  
-#   "title": "new post from ardy trying to upload a file",
-  
-#   "interest": "61d984d1f45c955cb81a3402",
-#   "focus": "61daa55af8e6f749d6788324",
-#   "posted_by": "61d9b8680a03f62aa1cf655f"
-  
-  
-# }
+
 @router.post("/", response_description=f"{object_name} data added into the database")
 async def add_data(data: schema = Body(...), image_file: Optional[UploadFile] = File(None), attachment_file: Optional[UploadFile] = File(None)):
     data = jsonable_encoder(data)
@@ -51,8 +43,7 @@ async def add_data(data: schema = Body(...), image_file: Optional[UploadFile] = 
             'id': str(interest_detail['_id']),
             'name': interest_detail['name']
         }
-
-        
+   
     data['focus'] = {
         'id': str(focus_detail['_id']),
         'name': focus_detail['name'],
@@ -127,8 +118,33 @@ async def delete_data(id: str):
     deleted_data = await db.delete(id)
     if deleted_data:
         return ResponseModel(
-            f"{object_name} with ID: {id} removed" 
+            f"{object_name} with ID: {id} removed", "success"
         )
     return ErrorResponseModel(
         "An error occurred", 404, f"{object_name} with id {0} doesn't exist".format(id)
+    )
+
+
+@router.post("/like", response_description=f"{object_name} data liked from the database")
+async def like_post(data: LikePostSchema = Body(...)):
+    data = jsonable_encoder(data)
+    is_liked = await post_likes_collection.find_one({"post": data['post'], "user": data['user']})
+    if is_liked:
+        return ErrorResponseModel("Post already liked", 422, f"{object_name} with id {is_liked['post']} already liked")
+    insert_data = await post_likes_collection.insert_one(data)
+    new_data = await post_likes_collection.find_one({"_id": insert_data.inserted_id})
+
+    return ResponseModel(helper(new_data), f"Successfully liked a {object_name}.")
+
+@router.post("/dislike", response_description=f"{object_name} data liked from the database")
+async def dislike_post(data: LikePostSchema = Body(...)):
+    data = jsonable_encoder(data)
+    is_liked = await post_likes_collection.find_one({"post": data['post'], "user": data['user']})
+    if is_liked:
+        await post_likes_collection.delete_one({"_id": ObjectId(is_liked['_id'])})
+        return ResponseModel(
+            f"{object_name} like with ID: {id} was removed" 
+        )
+    return ErrorResponseModel(
+        "An error occurred", 404, f"{object_name} doesn't exist"
     )

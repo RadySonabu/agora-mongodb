@@ -51,11 +51,7 @@ app.include_router(CommentRouter, tags=["comments"], prefix="/comments")
 app.include_router(TagRouter, tags=["tags"], prefix="/events/tags")
 app.include_router(EventRouter, tags=["events"], prefix="/events/event-registration")
 
-# app.include_router(fastapi_users.get_auth_router(auth_backend), prefix="", tags=["auth"])
-# app.include_router(fastapi_users.get_register_router(), prefix="", tags=["auth"])
-# app.include_router(fastapi_users.get_reset_password_router(), prefix="/auth", tags=["auth"],)
-# app.include_router(fastapi_users.get_verify_router(), prefix="/auth", tags=["auth"],)
-# app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
+
 
 @app.get("/", tags=["Root"])
 async def read_root(request: Request):
@@ -82,15 +78,7 @@ async def create_upload_files(file: UploadFile = File(...)):
     object_name = f'ardy/{filename}'
     s3_client = boto3.client('s3')
     response = s3_client.upload_fileobj(file.file, bucket, object_name)
-
+    
     return filename
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
-    
-# @app.post('/login')
-# async def login(user: UserLogin):
-#     user = await user_collection.find_one({'email': user.username})
-#     print(user['email'], "this is the username")
-#     return 'asdf'
+

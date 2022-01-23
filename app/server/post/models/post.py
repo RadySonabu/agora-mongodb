@@ -82,3 +82,8 @@ class UpdatePostModel(BaseModel):
         if isinstance(value, str):
             return cls(**json.loads(value))
         return value
+
+
+class LikePostSchema(BaseModel):
+    post: str # post id
+    user: str # user id

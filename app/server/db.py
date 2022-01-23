@@ -23,6 +23,7 @@ event = client.event
 interest_collection = interest.get_collection("interest_collection")
 focus_collection = focus.get_collection("focus_collection")
 post_collection = post.get_collection("post_collection")
+post_likes_collection = post.get_collection("post_likes_collection")
 comment_collection = comment.get_collection("comment_collection")
 tag_collection = tag.get_collection("tag_collection")
 event_collection = event.get_collection("event_collection")
@@ -79,7 +80,7 @@ class Mongo:
 
     # Delete a student from the database
     async def delete(self, id: str):
-        student = await self.collection.find_one({"_id": ObjectId(id)})
-        if student:
+        data = await self.collection.find_one({"_id": ObjectId(id)})
+        if data:
             await self.collection.delete_one({"_id": ObjectId(id)})
             return True
