@@ -24,6 +24,11 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install -r requirements.txt
+            - name: Create env file
+                run: |
+                  touch .env
+                  echo MONGO_DETAILS=${{ secrets.MONGO_DETAILS }} >> .env
+                  cat .env
             - name: Run Tests
               run: |
                   python app/main.py
