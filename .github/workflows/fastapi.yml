@@ -28,8 +28,8 @@ jobs:
               run: |
                   pip install flake8
                   flake8
-            - name: Run App
-              env:
-                  MONGO_DETAILS: ${{ secrets.MONGO_DETAILS }}
-              run: |
-                  python app/main.py
+            # - name: Run App
+            #   env:
+            #       MONGO_DETAILS: ${{ secrets.MONGO_DETAILS }}
+            #   run: |
+            #       python app/main.py
