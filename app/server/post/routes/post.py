@@ -148,3 +148,7 @@ async def unfollow_post(data: LikePostSchema = Body(...)):
     return ErrorResponseModel(
         "An error occurred", 404, f"{object_name} doesn't exist"
     )
+
+@router.get('/trending', response_description=f"Trending {object_name}  from the database")
+async def trending_post():
+    pass
